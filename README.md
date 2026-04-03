@@ -24,6 +24,17 @@ Paste any text → SATYA cross-checks across 40+ sources → Credibility Score +
 
 ---
 
+## How it works
+
+Input  
+→ AI Detection  
+→ Fact Check  
+→ Semantic Analysis  
+→ Scoring Engine  
+→ Output
+
+---
+
 ## Features
 
 - **AI Text Detection** — HuggingFace RoBERTa model detects AI-generated content
@@ -56,7 +67,7 @@ Paste any text → SATYA cross-checks across 40+ sources → Credibility Score +
 ## Project Structure
 
 ```
-satya-backend/
+satya-ai-misinformation-detector/
 ├── app/
 │   ├── main.py                    # FastAPI entry point
 │   ├── routes/
@@ -69,7 +80,8 @@ satya-backend/
 │   │   └── verifier.py            # Orchestration layer
 │   └── utils/
 │       └── scorer.py              # Multi-signal scoring engine
-├── index.html                     # Web frontend
+├── frontend/
+|      └── index.html                # Web frontend
 ├── run.py                         # Uvicorn server entry
 ├── requirements.txt
 └── .env                           # API keys (not committed)
@@ -82,8 +94,8 @@ satya-backend/
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/satya-backend.git
-cd satya-backend
+git clone https://github.com/Vagish23ps/satya-ai-misinformation-detector.git
+cd satya-ai-misinformation-detector
 ```
 
 ### 2. Create virtual environment
@@ -129,7 +141,7 @@ Server starts at: `http://127.0.0.1:8000`
 
 ### 6. Open the frontend
 
-Open `index.html` using VS Code Live Server or any local server.
+Open `frontend/index.html` using VS Code Live Server or any local server.
 
 ---
 
@@ -174,6 +186,9 @@ curl -X POST "http://127.0.0.1:8000/api/text/analyze" \
   }
 }
 ```
+---
+
+## UI Preview (Coming Soon)
 
 ---
 
@@ -213,13 +228,13 @@ SATYA combines 6 signals:
 - No image, video, or audio analysis in current phase
 
 ---
+## Future Improvements
 
-## Academic Context
-
-**Institution:** East Point College of Engineering & Technology  
-**Department:** CSE (IoT & CSBT)  
-**Year:** 2025-2026  
-
+- Real-time deployment (Render / Railway)
+- Image & video misinformation detection
+- Browser extension for instant verification
+  
+---
 **Philosophy:** This project is inspired by the ancient Sanskrit principle *Satyameva Jayate* (Truth Alone Triumphs) — inscribed on India's national emblem. Just as Krishna served as the strategic guide to truth in the Mahabharata, SATYA aims to be the digital guide in an era of AI-generated misinformation.
 
 ---
