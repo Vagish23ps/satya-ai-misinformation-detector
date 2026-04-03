@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SATYA — Truth Detection Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#050709;
+  --surface:#0d1117;
+  --surface2:#161b22;
+  --surface3:#21262d;
+  --border:#30363d;
+  --border2:#444c56;
+  --saffron:#ff9933;
+  --gold:#ffd700;
+  --green:#3fb950;
+  --red:#f85149;
+  --amber:#d29922;
+  --blue:#58a6ff;
+  --text:#e6edf3;
+  --text2:#8b949e;
+  --text3:#484f58;
+  --font:'Space Grotesk',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+}
+
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;overflow-x:hidden}
+
+/* GRID BACKGROUND */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(var(--surface2) 1px,transparent 1px),linear-gradient(90deg,var(--surface2) 1px,transparent 1px);
+  background-size:40px 40px;opacity:0.3;pointer-events:none;z-index:0;
+}
+
+/* HEADER */
+header{
+  position:sticky;top:0;z-index:100;
+  background:rgba(5,7,9,0.85);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:0 2rem;height:60px;
+  display:flex;align-items:center;gap:1rem;
+}
+
+.logo{display:flex;align-items:center;gap:12px}
+.logo-icon{
+  width:36px;height:36px;border-radius:8px;
+  background:linear-gradient(135deg,var(--saffron),var(--gold));
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:16px;color:#050709;
+  font-family:var(--mono);
+}
+.logo-name{
+  font-size:1.1rem;font-weight:700;letter-spacing:6px;
+  background:linear-gradient(90deg,var(--saffron),var(--gold));
+  background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.logo-sub{font-size:0.65rem;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-top:1px}
+
+.header-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.status-text{font-size:0.7rem;color:var(--text2);font-family:var(--mono);letter-spacing:1px}
+.version-badge{
+  font-size:0.65rem;font-family:var(--mono);
+  color:var(--saffron);border:1px solid rgba(255,153,51,0.3);
+  padding:3px 10px;border-radius:4px;background:rgba(255,153,51,0.05);
+}
+
+/* MAIN */
+main{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:4rem 2rem 6rem}
+
+/* HERO */
+.hero{text-align:center;margin-bottom:3rem}
+.hero-tag{
+  display:inline-block;font-size:0.7rem;font-family:var(--mono);
+  color:var(--saffron);border:1px solid rgba(255,153,51,0.3);
+  padding:4px 14px;border-radius:2px;margin-bottom:1.5rem;
+  letter-spacing:2px;text-transform:uppercase;
+  background:rgba(255,153,51,0.05);
+}
+.hero h1{
+  font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;
+  color:var(--text);margin-bottom:0.8rem;line-height:1.2;
+}
+.hero h1 span{
+  background:linear-gradient(90deg,var(--saffron),var(--gold));
+  background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.hero p{color:var(--text2);font-size:0.95rem;max-width:500px;margin:0 auto;line-height:1.7}
+
+/* STATS BAR */
+.stats-bar{
+  display:flex;gap:1px;background:var(--border);
+  border:1px solid var(--border);border-radius:10px;
+  overflow:hidden;margin-bottom:2rem;
+}
+.stat-item{
+  flex:1;background:var(--surface);padding:0.8rem 1rem;
+  text-align:center;
+}
+.stat-num{font-family:var(--mono);font-size:1.1rem;font-weight:600;color:var(--saffron)}
+.stat-label{font-size:0.65rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+
+/* INPUT SECTION */
+.input-section{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;overflow:hidden;margin-bottom:1.5rem;
+}
+.input-header{
+  padding:0.8rem 1.2rem;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:8px;
+}
+.input-header .dot{width:10px;height:10px;border-radius:50%}
+.input-header .dot:nth-child(1){background:#f85149}
+.input-header .dot:nth-child(2){background:#d29922}
+.input-header .dot:nth-child(3){background:#3fb950}
+.input-header span{margin-left:8px;font-size:0.75rem;font-family:var(--mono);color:var(--text3)}
+
+textarea{
+  width:100%;background:transparent;border:none;
+  color:var(--text);font-family:var(--font);
+  font-size:0.95rem;line-height:1.7;padding:1.2rem;
+  resize:vertical;min-height:130px;outline:none;
+}
+textarea::placeholder{color:var(--text3)}
+
+.input-footer{
+  padding:0.8rem 1.2rem;border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.char-count{font-size:0.7rem;font-family:var(--mono);color:var(--text3)}
+
+.analyze-btn{
+  padding:0.7rem 2rem;
+  background:linear-gradient(135deg,var(--saffron),var(--gold));
+  border:none;border-radius:6px;
+  color:#050709;font-family:var(--font);
+  font-weight:600;font-size:0.85rem;letter-spacing:1px;
+  text-transform:uppercase;cursor:pointer;
+  transition:all 0.2s;position:relative;overflow:hidden;
+}
+.analyze-btn::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,0.2),transparent);
+  opacity:0;transition:opacity 0.2s;
+}
+.analyze-btn:hover::before{opacity:1}
+.analyze-btn:active{transform:scale(0.98)}
+.analyze-btn:disabled{opacity:0.4;cursor:not-allowed}
+
+/* LOADING */
+.loading{display:none;padding:3rem;text-align:center}
+.loading-inner{display:inline-flex;flex-direction:column;align-items:center;gap:1.5rem}
+.loading-bar{
+  width:200px;height:2px;background:var(--border);border-radius:2px;overflow:hidden;
+}
+.loading-fill{
+  height:100%;background:linear-gradient(90deg,var(--saffron),var(--gold));
+  border-radius:2px;animation:load 1.5s ease-in-out infinite;
+}
+@keyframes load{0%{width:0;margin-left:0}50%{width:60%;margin-left:20%}100%{width:0;margin-left:100%}}
+.loading-steps{display:flex;flex-direction:column;gap:6px;text-align:left}
+.loading-step{font-size:0.75rem;font-family:var(--mono);color:var(--text3);display:flex;align-items:center;gap:8px}
+.loading-step.active{color:var(--saffron)}
+.loading-step::before{content:'▸';font-size:0.6rem}
+.loading-step.done{color:var(--green)}
+.loading-step.done::before{content:'✓'}
+
+/* ERROR */
+.error-msg{
+  display:none;background:rgba(248,81,73,0.08);
+  border:1px solid rgba(248,81,73,0.3);color:var(--red);
+  border-radius:8px;padding:0.9rem 1.2rem;
+  font-size:0.85rem;margin-top:1rem;
+}
+
+/* RESULT */
+#result{display:none}
+
+/* REPORT CARD */
+.report-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+
+.rc-header{
+  padding:1.5rem 1.8rem;
+  background:linear-gradient(135deg,var(--surface2),var(--surface));
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:1.5rem;
+  position:relative;overflow:hidden;
+}
+.rc-header::before{
+  content:'सत्य';position:absolute;right:-10px;top:50%;
+  transform:translateY(-50%);
+  font-size:5rem;font-weight:900;opacity:0.04;
+  background:linear-gradient(90deg,var(--saffron),var(--gold));
+  background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  pointer-events:none;letter-spacing:-2px;
+}
+
+/* SCORE RING */
+.score-ring-wrap{position:relative;width:90px;height:90px;flex-shrink:0}
+.score-ring{transform:rotate(-90deg)}
+.score-bg{fill:none;stroke:var(--surface3);stroke-width:4}
+.score-fill{fill:none;stroke-width:4;stroke-linecap:round;transition:stroke-dashoffset 1s ease}
+.score-inner{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+}
+.score-num{font-family:var(--mono);font-size:1.5rem;font-weight:700;line-height:1}
+.score-lbl{font-size:0.5rem;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-top:2px}
+
+.rc-meta{flex:1}
+.rc-title{font-size:0.65rem;font-family:var(--mono);color:var(--text3);text-transform:uppercase;letter-spacing:2px;margin-bottom:4px}
+.rc-claim{font-size:0.9rem;color:var(--text);font-style:italic;margin-bottom:8px;line-height:1.5}
+.rc-verdict{font-size:0.8rem;font-weight:600;padding:4px 0}
+
+.risk-tag{
+  margin-left:auto;padding:6px 16px;border-radius:4px;
+  font-size:0.7rem;font-family:var(--mono);font-weight:600;
+  letter-spacing:1px;text-transform:uppercase;flex-shrink:0;
+}
+.risk-low{background:rgba(63,185,80,0.12);color:var(--green);border:1px solid rgba(63,185,80,0.3)}
+.risk-medium{background:rgba(210,153,34,0.12);color:var(--amber);border:1px solid rgba(210,153,34,0.3)}
+.risk-high{background:rgba(248,81,73,0.12);color:var(--red);border:1px solid rgba(248,81,73,0.3)}
+
+/* METRICS ROW */
+.metrics-row{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:1px;background:var(--border);border-bottom:1px solid var(--border);
+}
+.metric-box{background:var(--surface2);padding:1rem 1.2rem}
+.metric-label{font-size:0.6rem;font-family:var(--mono);text-transform:uppercase;letter-spacing:1.5px;color:var(--text3);margin-bottom:6px}
+.metric-value{font-family:var(--mono);font-size:1.2rem;font-weight:600}
+.metric-sub{font-size:0.68rem;color:var(--text3);margin-top:3px}
+
+/* PROGRESS BAR */
+.pbar{width:100%;height:3px;background:var(--border);border-radius:2px;margin-top:8px;overflow:hidden}
+.pbar-fill{height:100%;border-radius:2px;transition:width 1s ease}
+
+/* STANCE ROW */
+.stance-section{padding:1.2rem 1.5rem;border-bottom:1px solid var(--border)}
+.section-label{font-size:0.6rem;font-family:var(--mono);text-transform:uppercase;letter-spacing:2px;color:var(--text3);margin-bottom:10px}
+.stance-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.stance-chip{
+  padding:4px 12px;border-radius:4px;font-size:0.72rem;
+  font-family:var(--mono);font-weight:500;
+}
+.chip-support{background:rgba(63,185,80,0.12);color:var(--green);border:1px solid rgba(63,185,80,0.25)}
+.chip-contra{background:rgba(248,81,73,0.12);color:var(--red);border:1px solid rgba(248,81,73,0.25)}
+.chip-neutral{background:rgba(139,148,158,0.1);color:var(--text2);border:1px solid rgba(139,148,158,0.2)}
+.chip-total{background:rgba(88,166,255,0.1);color:var(--blue);border:1px solid rgba(88,166,255,0.2)}
+.sem-verdict{
+  font-size:0.85rem;font-weight:600;font-family:var(--mono);
+  margin-bottom:8px;
+}
+
+/* EVIDENCE */
+.evidence-section{padding:1.2rem 1.5rem;border-bottom:1px solid var(--border)}
+.evidence-item{
+  background:var(--surface3);border:1px solid var(--border);
+  border-radius:6px;padding:0.8rem 1rem;margin-top:8px;
+  border-left:3px solid var(--border2);
+}
+.ev-support{border-left-color:var(--green)}
+.ev-contra{border-left-color:var(--red)}
+.ev-neutral{border-left-color:var(--text3)}
+.ev-stance-label{font-size:0.6rem;font-family:var(--mono);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.ev-text{font-size:0.78rem;color:var(--text2);line-height:1.6}
+.ev-sim{font-size:0.65rem;color:var(--text3);font-family:var(--mono);margin-top:5px}
+
+/* FACT CHECK */
+.fact-section{padding:1.2rem 1.5rem;border-bottom:1px solid var(--border)}
+.fact-source{font-size:0.75rem;color:var(--text2);margin-top:6px}
+.source-link{color:var(--saffron);text-decoration:none;font-size:0.75rem}
+.source-link:hover{text-decoration:underline}
+
+/* FINAL VERDICT */
+.verdict-section{padding:1.2rem 1.5rem}
+.verdict-box{
+  padding:1rem 1.2rem;border-radius:6px;
+  font-size:0.88rem;font-weight:500;line-height:1.5;
+  display:flex;align-items:flex-start;gap:10px;
+}
+.verdict-icon{font-size:1rem;flex-shrink:0;margin-top:1px}
+
+/* FOOTER */
+footer{
+  position:relative;z-index:1;text-align:center;
+  padding:2rem;color:var(--text3);font-size:0.72rem;
+  letter-spacing:1px;border-top:1px solid var(--border);
+  margin-top:4rem;font-family:var(--mono);
+}
+footer span{color:var(--saffron)}
+@media (max-width: 768px) {
+  header { padding: 0 1rem; }
+  .status-text { display: none; }
+  .logo-name { letter-spacing: 3px; font-size: 1rem; }
+
+  main { padding: 2rem 1rem 4rem; }
+
+  .hero h1 { font-size: 1.5rem; }
+  .hero p { font-size: 0.85rem; }
+
+  .stats-bar { display: grid; grid-template-columns: repeat(2,1fr); }
+
+  .metrics-row { grid-template-columns: repeat(2,1fr); }
+
+  .rc-header {
+    flex-wrap: wrap;
+    padding: 1rem;
+    gap: 1rem;
+  }
+  .rc-header::before { display: none; }
+  .risk-tag { margin-left: 0; }
+
+  .score-ring-wrap { width: 70px; height: 70px; }
+  .score-ring { width: 70px; height: 70px; }
+  .score-num { font-size: 1.2rem; }
+
+  .stance-row { gap: 6px; }
+  .stance-chip { font-size: 0.62rem; padding: 3px 8px; }
+
+  .input-footer {
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+  }
+  .analyze-btn { width: 100%; text-align: center; padding: 0.8rem; }
+
+  .metric-box { padding: 0.8rem; }
+  .metric-value { font-size: 1rem; }
+}
+
+@media (max-width: 420px) {
+  .hero h1 { font-size: 1.3rem; }
+  .metrics-row { grid-template-columns: 1fr 1fr; }
+  .rc-header { flex-direction: column; align-items: flex-start; }
+  .score-ring-wrap { align-self: center; }
+  .logo-sub { display: none; }
+}
+/* ===== ABOUT MODAL ===== */
+.modal-overlay{
+  display:none;position:fixed;inset:0;z-index:999;
+  background:rgba(5,7,9,0.85);backdrop-filter:blur(8px);
+  align-items:center;justify-content:center;padding:1rem;
+}
+.modal-overlay.open{display:flex}
+.modal{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;max-width:600px;width:100%;
+  max-height:90vh;overflow-y:auto;position:relative;
+}
+.modal-header{
+  padding:1.2rem 1.5rem;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.modal-header h2{font-size:1rem;font-weight:600;letter-spacing:1px}
+.modal-close{
+  background:none;border:none;color:var(--text2);
+  font-size:1.2rem;cursor:pointer;padding:4px 8px;
+  border-radius:4px;transition:background 0.2s;
+}
+.modal-close:hover{background:var(--surface2)}
+.modal-body{padding:1.5rem}
+.about-section{margin-bottom:1.5rem}
+.about-section h3{
+  font-size:0.65rem;font-family:var(--mono);
+  text-transform:uppercase;letter-spacing:2px;
+  color:var(--saffron);margin-bottom:0.8rem;
+}
+.about-section p{font-size:0.85rem;color:var(--text2);line-height:1.8}
+.tech-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:8px}
+.tech-item{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:6px;padding:0.6rem 0.8rem;
+  font-size:0.75rem;font-family:var(--mono);color:var(--text2);
+}
+.tech-item span{color:var(--saffron)}
+
+/* ===== ACTION BUTTONS ===== */
+.action-row{
+  display:flex;gap:8px;margin-top:1rem;flex-wrap:wrap;
+}
+.action-btn{
+  padding:0.5rem 1rem;border-radius:6px;font-size:0.75rem;
+  font-family:var(--mono);cursor:pointer;transition:all 0.2s;
+  display:flex;align-items:center;gap:6px;font-weight:500;
+}
+.btn-pdf{
+  background:rgba(248,81,73,0.1);color:var(--red);
+  border:1px solid rgba(248,81,73,0.3);
+}
+.btn-pdf:hover{background:rgba(248,81,73,0.2)}
+.btn-share{
+  background:rgba(88,166,255,0.1);color:var(--blue);
+  border:1px solid rgba(88,166,255,0.3);
+}
+.btn-share:hover{background:rgba(88,166,255,0.2)}
+.btn-copied{
+  background:rgba(63,185,80,0.1);color:var(--green);
+  border:1px solid rgba(63,185,80,0.3);
+}
+
+/* ===== PRINT STYLES ===== */
+@media print {
+  header,footer,.hero,.stats-bar,.input-section,
+  .loading,.error-msg,.action-row,
+  .modal-overlay {
+    display:none!important;
+  }
+
+  body {
+    background: var(--bg) !important;
+    color: var(--text) !important;
+  }
+
+  body::before {
+    display: none;
+  }
+
+  main {
+    padding: 0;
+    max-width: 100%;
+  }
+
+  .report-card {
+    border: 1px solid var(--border);
+    border-radius: 0;
+    background: var(--surface) !important;
+  }
+
+  .rc-header {
+    background: linear-gradient(135deg, var(--surface2), var(--surface)) !important;
+  }
+
+  .metric-box,
+  .stance-section,
+  .evidence-section,
+  .fact-section,
+  .verdict-section {
+    background: var(--surface2) !important;
+    border-color: var(--border) !important;
+  }
+
+  #result {
+    display: block !important;
+  }
+}
+
+/* ===== MOBILE RESPONSIVE ===== */
+@media (max-width: 768px) {
+  header { padding: 0 1rem; }
+  .status-text { display: none; }
+  .logo-name { letter-spacing: 3px; font-size: 1rem; }
+  main { padding: 2rem 1rem 4rem; }
+  .hero h1 { font-size: 1.5rem; }
+  .hero p { font-size: 0.85rem; }
+  .stats-bar { display: grid; grid-template-columns: repeat(2,1fr); }
+  .metrics-row { grid-template-columns: repeat(2,1fr); }
+  .rc-header { flex-wrap: wrap; padding: 1rem; gap: 1rem; }
+  .rc-header::before { display: none; }
+  .risk-tag { margin-left: 0; }
+  .score-ring-wrap { width: 70px; height: 70px; }
+  .score-ring { width: 70px; height: 70px; }
+  .score-num { font-size: 1.2rem; }
+  .stance-row { gap: 6px; }
+  .stance-chip { font-size: 0.62rem; padding: 3px 8px; }
+  .input-footer { flex-direction: column; gap: 10px; align-items: stretch; }
+  .analyze-btn { width: 100%; text-align: center; padding: 0.8rem; }
+  .metric-box { padding: 0.8rem; }
+  .metric-value { font-size: 1rem; }
+  .tech-grid { grid-template-columns: 1fr; }
+  .action-row { flex-direction: column; }
+  .action-btn { justify-content: center; }
+}
+
+@media (max-width: 420px) {
+  .hero h1 { font-size: 1.3rem; }
+  .rc-header { flex-direction: column; align-items: flex-start; }
+  .score-ring-wrap { align-self: center; }
+  .logo-sub { display: none; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">स</div>
+    <div>
+      <div class="logo-name">SATYA</div>
+      <div class="logo-sub">Truth Detection Platform</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="status-dot"></div>
+    <span class="status-text">SYSTEM ONLINE</span>
+    <div class="version-badge">v2.0</div>
+    <button onclick="openAbout()" style="background:none;border:1px solid var(--border);color:var(--text2);padding:4px 12px;border-radius:4px;font-size:0.7rem;font-family:var(--mono);cursor:pointer;letter-spacing:1px">ABOUT</button>
+  </div>
+</header>
+
+<main>
+  <div class="hero">
+    <div class="hero-tag">AI-Powered Misinformation Detection</div>
+    <h1>Analyze. Verify. <span>Find the Truth.</span></h1>
+    <p>Paste any text, news headline, or WhatsApp forward. SATYA cross-checks across 30+ sources using AI and semantic analysis.</p>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-num">5+</div>
+      <div class="stat-label">AI Signals</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">30+</div>
+      <div class="stat-label">News Sources</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">Real-time</div>
+      <div class="stat-label">Verification</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">Semantic</div>
+      <div class="stat-label">Analysis</div>
+    </div>
+  </div>
+
+  <div class="input-section">
+    <div class="input-header">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <span>satya-analyzer.py — input terminal</span>
+    </div>
+    <textarea id="inputText" placeholder="Paste any news headline, WhatsApp forward, social media post, or claim here..."></textarea>
+    <div class="input-footer">
+      <span class="char-count" id="charCount">0 characters</span>
+      <button class="analyze-btn" id="analyzeBtn" onclick="analyzeText()">
+        ▶ Run Analysis
+      </button>
+    </div>
+  </div>
+
+  <div class="error-msg" id="errorMsg"></div>
+
+  <div class="loading" id="loading">
+    <div class="loading-inner">
+      <div class="loading-bar"><div class="loading-fill"></div></div>
+      <div class="loading-steps">
+        <div class="loading-step active" id="step1">Initializing AI detection engine...</div>
+        <div class="loading-step" id="step2">Scanning 30+ news sources...</div>
+        <div class="loading-step" id="step3">Running semantic verification...</div>
+        <div class="loading-step" id="step4">Calculating credibility score...</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="result"></div>
+</main>
+<!-- ABOUT MODAL -->
+<div class="modal-overlay" id="aboutModal" onclick="closeAbout(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>ABOUT SATYA</h2>
+      <button class="modal-close" onclick="document.getElementById('aboutModal').classList.remove('open')">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <div class="about-section">
+        <h3>What is SATYA?</h3>
+        <p>SATYA (Sanskrit: Truth) is an AI-powered misinformation detection platform that analyzes text, news headlines, and WhatsApp forwards in real-time. It cross-checks content across 40+ verified news sources using semantic AI analysis to determine credibility.</p>
+      </div>
+
+      <div class="about-section">
+        <h3>Philosophy</h3>
+        <p>सत्यमेव जयते — Truth Alone Triumphs. This ancient principle from the Mundaka Upanishad is the founding philosophy of this project. In the Mahabharata, Krishna served as the ultimate guide to truth. SATYA is designed to be the digital equivalent — cutting through misinformation to reveal reality.</p>
+      </div>
+
+      <div class="about-section">
+        <h3>How it works</h3>
+        <p>SATYA uses a 5-signal verification pipeline to calculate a credibility score from 0–100:</p>
+        <div class="tech-grid" style="margin-top:10px">
+          <div class="tech-item"><span>01</span> AI Text Detection</div>
+          <div class="tech-item"><span>02</span> Google Fact Check</div>
+          <div class="tech-item"><span>03</span> RSS News Feeds</div>
+          <div class="tech-item"><span>04</span> DuckDuckGo Search</div>
+          <div class="tech-item"><span>05</span> Wikipedia Validation</div>
+          <div class="tech-item"><span>06</span> Semantic Analysis</div>
+        </div>
+      </div>
+
+      <div class="about-section">
+        <h3>Technology Stack</h3>
+        <div class="tech-grid">
+          <div class="tech-item"><span>Backend</span> Python FastAPI</div>
+          <div class="tech-item"><span>AI Model</span> HuggingFace RoBERTa</div>
+          <div class="tech-item"><span>Semantic</span> Sentence Transformers</div>
+          <div class="tech-item"><span>Search</span> DuckDuckGo API</div>
+          <div class="tech-item"><span>News</span> 40+ RSS Feeds</div>
+          <div class="tech-item"><span>Frontend</span> HTML + CSS + JS</div>
+        </div>
+      </div>
+
+      <div class="about-section">
+        <h3>Created by</h3>
+        <p> Vagish Parameshwar Shanbhag</p><br>
+      </div>
+
+    </div>
+  </div>
+</div>
+<footer>
+  <p>सत्यमेव जयते — <span>Truth Alone Triumphs</span></p>
+</footer>
+
+<script>
+// ===== LIVE BACKEND STATUS CHECK =====
+async function checkBackendStatus(){
+  const dot  = document.querySelector('.status-dot');
+  const text = document.querySelector('.status-text');
+  try {
+    const res = await fetch('http://127.0.0.1:8000/health');
+    if(res.ok){
+      dot.style.background  = '#3fb950';
+      dot.style.boxShadow   = '0 0 8px #3fb950';
+      text.textContent      = 'SYSTEM ONLINE';
+      text.style.color      = '#3fb950';
+    } else {
+      throw new Error('offline');
+    }
+  } catch {
+    dot.style.background  = '#f85149';
+    dot.style.boxShadow   = '0 0 8px #f85149';
+    text.textContent      = 'BACKEND OFFLINE';
+    text.style.color      = '#f85149';
+  }
+}
+
+// Check on load + every 30 seconds
+checkBackendStatus();
+setInterval(checkBackendStatus, 30000);
+
+// Char counter
+document.getElementById('inputText').addEventListener('input', function(){
+  document.getElementById('charCount').textContent = this.value.length + ' characters';
+});
+
+// Loading steps animation
+function animateSteps(){
+  const steps = ['step1','step2','step3','step4'];
+  let i = 0;
+  const interval = setInterval(()=>{
+    if(i > 0) document.getElementById(steps[i-1]).classList.replace('active','done');
+    if(i < steps.length){
+      document.getElementById(steps[i]).classList.add('active');
+      i++;
+    } else {
+      clearInterval(interval);
+    }
+  }, 1800);
+  return interval;
+}
+
+function resetSteps(){
+  ['step1','step2','step3','step4'].forEach(id=>{
+    const el = document.getElementById(id);
+    el.className = 'loading-step';
+  });
+}
+
+async function analyzeText(){
+  const text = document.getElementById('inputText').value.trim();
+  const btn = document.getElementById('analyzeBtn');
+  const loading = document.getElementById('loading');
+  const result = document.getElementById('result');
+  const errorMsg = document.getElementById('errorMsg');
+
+  errorMsg.style.display = 'none';
+  result.style.display = 'none';
+
+  if(!text){
+    errorMsg.textContent = 'Please paste some text to analyze.';
+    errorMsg.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  loading.style.display = 'block';
+  resetSteps();
+  const stepInterval = animateSteps();
+
+  try {
+    const response = await fetch('http://127.0.0.1:8000/api/text/analyze',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({text})
+    });
+    if(!response.ok) throw new Error('API error');
+    const data = await response.json();
+    clearInterval(stepInterval);
+    renderResult(data);
+  } catch(err){
+    clearInterval(stepInterval);
+    errorMsg.textContent = '⚠ Could not connect to SATYA backend. Make sure python run.py is running.';
+    errorMsg.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    loading.style.display = 'none';
+  }
+}
+
+function renderResult(data){
+
+  // Save for share function
+  window._lastReport   = data.truth_report  || {};
+  window._lastAI       = data.ai_detection  || {};
+  window._lastFact     = data.fact_check    || {};
+  window._lastSemantic = data.semantic      || {};
+  window._lastInput = document.getElementById('inputText').value;
+
+  const input = window._lastInput || document.getElementById('inputText').value || 'N/A';
+  const report   = data.truth_report  || {};
+  const ai       = data.ai_detection  || {};
+  const fact     = data.fact_check    || {};
+  const semantic = data.semantic      || {};
+  const evidence = data.evidence      || {};
+
+  const score       = report.credibility_score ?? 0;
+  const aiPercent   = Math.round((ai.ai_probability ?? 0) * 100);
+  const semVerdict  = semantic.verdict   || 'NO EVIDENCE';
+  const supports    = semantic.supports  ?? 0;
+  const contradicts = semantic.contradicts ?? 0;
+  const neutral     = semantic.neutral   ?? 0;
+  const details     = semantic.details   || [];
+  const totalSrc    = evidence.total     ?? 0;
+
+  // Colors
+  const scoreColor = score >= 90 ? '#3fb950' : score >= 70 ? '#d29922' : '#f85149';
+  const riskClass  = score >= 90 ? 'risk-low' : score >= 70 ? 'risk-medium' : 'risk-high';
+
+  // Score ring
+  const circumference = 2 * Math.PI * 40;
+  const offset = circumference - (score / 100) * circumference;
+
+  // Semantic color
+  const semColor = semVerdict.includes('SUPPORT') ? '#3fb950'
+    : semVerdict.includes('CONTRADICT') ? '#f85149'
+    : semVerdict === 'NO EVIDENCE' ? '#f85149' : '#d29922';
+
+// Verdict color based on text content
+const verdict = report.verdict || '';
+const isGreen = verdict.includes('LIKELY AUTHENTIC') || verdict.includes('AUTHENTIC');
+const isYellow = verdict.includes('PARTIALLY') || verdict.includes('UNCERTAIN') || 
+                 verdict.includes('UNVERIFIABLE') || verdict.includes('MIXED') ||
+                 verdict.includes('WEAKLY');
+const isRed = !isGreen && !isYellow;
+
+const verdictStyle = isGreen
+  ? 'background:rgba(63,185,80,0.08);border:1px solid rgba(63,185,80,0.25);color:#3fb950'
+  : isYellow
+  ? 'background:rgba(210,153,34,0.08);border:1px solid rgba(210,153,34,0.25);color:#d29922'
+  : 'background:rgba(248,81,73,0.08);border:1px solid rgba(248,81,73,0.25);color:#f85149';
+
+const verdictIcon = isGreen ? '✓' : isYellow ? '⚠' : '✗';
+
+  // Evidence HTML
+  const evidenceHTML = details.length > 0
+    ? details.map(d => {
+        const cls = d.stance === 'SUPPORTS' ? 'ev-support'
+          : d.stance === 'CONTRADICTS' ? 'ev-contra' : 'ev-neutral';
+        const clr = d.stance === 'SUPPORTS' ? '#3fb950'
+          : d.stance === 'CONTRADICTS' ? '#f85149' : '#8b949e';
+        return `<div class="evidence-item ${cls}">
+          <div class="ev-stance-label" style="color:${clr}">${d.stance}</div>
+          <div class="ev-text">${d.snippet || 'No snippet available'}</div>
+          <div class="ev-sim">Similarity score: ${(d.similarity * 100).toFixed(0)}%</div>
+        </div>`;
+      }).join('')
+    : '<div style="color:var(--text3);font-size:0.8rem;font-family:var(--mono);margin-top:6px">// No evidence snippets collected</div>';
+
+  const sourceHTML = fact.url
+    ? `<a class="source-link" href="${fact.url}" target="_blank">→ View fact-check source</a>`
+    : '';
+
+  const resultEl = document.getElementById('result');
+  resultEl.style.display = 'block';
+  resultEl.innerHTML = `
+  <div class="report-card">
+
+    <!-- HEADER -->
+    <div class="rc-header">
+      <div class="score-ring-wrap">
+        <svg class="score-ring" width="90" height="90" viewBox="0 0 90 90">
+          <circle class="score-bg" cx="45" cy="45" r="40"/>
+          <circle class="score-fill" cx="45" cy="45" r="40"
+            stroke="${scoreColor}"
+            stroke-dasharray="${circumference}"
+            stroke-dashoffset="${offset}"/>
+        </svg>
+        <div class="score-inner">
+          <div class="score-num" style="color:${scoreColor}">${score}</div>
+          <div class="score-lbl">${score >= 90 ? 'Trusted' : score >= 70 ? 'Mixed' : 'Risky'}</div>
+        </div>
+      </div>
+      <div class="rc-meta">
+        <div class="rc-title">SATYA Truth Report Card</div>
+        <div class="rc-claim">"${window._lastInput || 'No input'}"</div>
+        <div class="rc-verdict" style="color:${scoreColor}">${report.risk_level || 'UNKNOWN'} — Credibility: ${score}/100</div>
+        <div style="margin-top:10px;font-size:0.75rem;color:#888">
+        Analyzed on: ${new Date().toLocaleString()}
+        </div>
+      </div>
+      <div class="risk-tag ${riskClass}">${report.risk_level || 'UNKNOWN'}</div>
+    </div>
+
+    <!-- METRICS -->
+    <div class="metrics-row">
+      <div class="metric-box">
+        <div class="metric-label">AI Probability</div>
+        <div class="metric-value" style="color:${aiPercent > 60 ? '#f85149' : '#3fb950'}">${aiPercent}%</div>
+        <div class="metric-sub">${ai.confidence || 'N/A'} confidence</div>
+        <div class="pbar"><div class="pbar-fill" style="width:${aiPercent}%;background:${aiPercent > 60 ? '#f85149' : '#3fb950'}"></div></div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-label">Sources Checked</div>
+        <div class="metric-value" style="color:var(--blue)">${totalSrc}</div>
+        <div class="metric-sub">RSS + DDG + Wiki</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-label">Semantic Match</div>
+        <div class="metric-value" style="color:${semColor};font-size:0.85rem">${semVerdict}</div>
+        <div class="metric-sub">${supports} support · ${contradicts} contra</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-label">Fact Check</div>
+        <div class="metric-value" style="font-size:0.85rem;color:${fact.verdict === 'TRUE' ? '#3fb950' : fact.verdict === 'FALSE' || fact.verdict === 'MISLEADING' ? '#f85149' : '#d29922'}">${fact.verdict || 'NO DATA'}</div>
+        <div class="metric-sub">${fact.source || 'Google Fact Check'}</div>
+      </div>
+    </div>
+
+    <!-- SEMANTIC VERIFICATION -->
+    <div class="stance-section">
+      <div class="section-label">Semantic Evidence Verification</div>
+      <div class="sem-verdict" style="color:${semColor}">${semVerdict}</div>
+      <div class="stance-row">
+        <div class="stance-chip chip-support">✓ Supports: ${supports}</div>
+        <div class="stance-chip chip-contra">✗ Contradicts: ${contradicts}</div>
+        <div class="stance-chip chip-neutral">~ Neutral: ${neutral}</div>
+        <div class="stance-chip chip-total">Total Sources: ${totalSrc}</div>
+      </div>
+    </div>
+
+    <!-- EVIDENCE -->
+    <div class="evidence-section">
+      <div class="section-label">Evidence Sources Analyzed</div>
+      ${evidenceHTML}
+    </div>
+
+    <!-- FACT CHECK -->
+    <div class="fact-section">
+      ${fact.verdict && fact.verdict !== 'NO DATA FOUND' && fact.verdict !== 'ERROR' ? `
+      <div class="fact-section">
+      <div class="section-label">Google Fact Check Database</div>
+      <div style="font-size:0.85rem;font-weight:600;color:${fact.verdict === 'TRUE' ? '#3fb950' : fact.verdict === 'FALSE' ? '#f85149' : '#d29922'}">${fact.verdict}</div>
+      <div class="fact-source">${fact.source ? 'Source: ' + fact.source : ''}</div>
+      ${fact.url ? `<a class="source-link" href="${fact.url}" target="_blank">→ View fact-check source</a>` : ''}
+    </div>` : ''}
+    </div>
+
+    <!-- VERDICT -->
+    <div class="verdict-section">
+      <div class="section-label">Final Verdict</div>
+      <div class="verdict-box" style="${verdictStyle}">
+        <div class="verdict-icon">${verdictIcon}</div>
+        <div>${report.verdict || 'Unable to determine'}</div>
+      </div>
+    </div>
+  <!-- ACTION BUTTONS -->
+    <div class="action-row" style="padding:0 1.5rem 1.5rem">
+      <button class="action-btn btn-pdf" onclick="exportPDF()">
+        ⬇ Export as PDF
+      </button>
+      <button class="action-btn btn-share" id="shareBtn" onclick="shareResult()">
+        ⎘ Copy Report
+      </button>
+    </div>
+  </div>`;
+
+  resultEl.scrollIntoView({behavior:'smooth',block:'start'});
+}
+// ===== ABOUT MODAL =====
+function openAbout(){
+  document.getElementById('aboutModal').classList.add('open');
+}
+function closeAbout(e){
+  if(e.target.id === 'aboutModal'){
+    document.getElementById('aboutModal').classList.remove('open');
+  }
+}
+
+// ===== EXPORT PDF =====
+function exportPDF(){
+  window.print();
+}
+
+// ===== SHARE / COPY REPORT =====
+function shareResult(){
+  const report  = window._lastReport  || {};
+  const ai      = window._lastAI      || {};
+  const fact    = window._lastFact    || {};
+  const semantic = window._lastSemantic || {};
+
+  const score     = report.credibility_score ?? 0;
+  const aiPercent = Math.round((ai.ai_probability ?? 0) * 100);
+  const verdict   = report.verdict || 'N/A';
+  const risk      = report.risk_level || 'N/A';
+  const semV      = semantic.verdict || 'N/A';
+
+  const input = window._lastInput || 'N/A';
+  const text = `
+SATYA Truth Report Card
+━━━━━━━━━━━━━━━━━━━━━━
+Input Text:
+"${input}"
+━━━━━━━━━━━━━━━━━━━━━━
+Credibility Score : ${score}/100
+Risk Level        : ${risk}
+AI Probability    : ${aiPercent}%
+Semantic Verdict  : ${semV}
+Fact Check        : ${fact.verdict || 'NO DATA'}
+━━━━━━━━━━━━━━━━━━━━━━
+Verdict: ${verdict}
+
+Analyzed by SATYA — Truth Detection Platform
+सत्यमेव जयते — Truth Alone Triumphs
+  `.trim();
+
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn = document.getElementById('shareBtn');
+    btn.textContent = '✓ Copied!';
+    btn.className = 'action-btn btn-copied';
+    setTimeout(()=>{
+      btn.textContent = '⎘ Copy Report';
+      btn.className = 'action-btn btn-share';
+    }, 2000);
+  }).catch(()=>{
+    alert('Copy failed — please copy manually!');
+  });
+}
+</script>
+</body>
+</html>
