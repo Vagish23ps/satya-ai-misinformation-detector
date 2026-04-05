@@ -45,6 +45,7 @@ Input
 - **Semantic Similarity** — Sentence Transformers for evidence stance classification
 - **Multi-signal Scoring** — 6 signals combined into a 0–100 credibility score
 - **Truth Report Card** — Beautiful dark-themed UI with animated score ring
+-  **Export the result** - You can copy the pdf of result also copy the result to the clipboard
 
 ---
 
@@ -188,7 +189,18 @@ curl -X POST "http://127.0.0.1:8000/api/text/analyze" \
 ```
 ---
 
-## UI Preview (Coming Soon)
+## UI Preview
+## Input
+<img width="1892" height="916" alt="Screenshot 2026-04-02 213058" src="https://github.com/user-attachments/assets/128b35d6-d6dd-40c8-9c34-7b734edde8b7" />
+
+## Sample output
+---
+<img width="448" height="784" alt="Screenshot 2026-04-02 213030" src="https://github.com/user-attachments/assets/2683867e-684b-4a5a-9841-11235808e1f0" />
+
+---
+<img width="577" height="759" alt="Screenshot 2026-04-02 215404" src="https://github.com/user-attachments/assets/0f942cab-088d-4f3f-a8b2-108d4138144f" />
+
+
 
 ---
 
