@@ -295,53 +295,7 @@ footer{
   margin-top:4rem;font-family:var(--mono);
 }
 footer span{color:var(--saffron)}
-@media (max-width: 768px) {
-  header { padding: 0 1rem; }
-  .status-text { display: none; }
-  .logo-name { letter-spacing: 3px; font-size: 1rem; }
 
-  main { padding: 2rem 1rem 4rem; }
-
-  .hero h1 { font-size: 1.5rem; }
-  .hero p { font-size: 0.85rem; }
-
-  .stats-bar { display: grid; grid-template-columns: repeat(2,1fr); }
-
-  .metrics-row { grid-template-columns: repeat(2,1fr); }
-
-  .rc-header {
-    flex-wrap: wrap;
-    padding: 1rem;
-    gap: 1rem;
-  }
-  .rc-header::before { display: none; }
-  .risk-tag { margin-left: 0; }
-
-  .score-ring-wrap { width: 70px; height: 70px; }
-  .score-ring { width: 70px; height: 70px; }
-  .score-num { font-size: 1.2rem; }
-
-  .stance-row { gap: 6px; }
-  .stance-chip { font-size: 0.62rem; padding: 3px 8px; }
-
-  .input-footer {
-    flex-direction: column;
-    gap: 10px;
-    align-items: stretch;
-  }
-  .analyze-btn { width: 100%; text-align: center; padding: 0.8rem; }
-
-  .metric-box { padding: 0.8rem; }
-  .metric-value { font-size: 1rem; }
-}
-
-@media (max-width: 420px) {
-  .hero h1 { font-size: 1.3rem; }
-  .metrics-row { grid-template-columns: 1fr 1fr; }
-  .rc-header { flex-direction: column; align-items: flex-start; }
-  .score-ring-wrap { align-self: center; }
-  .logo-sub { display: none; }
-}
 /* ===== ABOUT MODAL ===== */
 .modal-overlay{
   display:none;position:fixed;inset:0;z-index:999;
@@ -412,43 +366,15 @@ footer span{color:var(--saffron)}
   .modal-overlay {
     display:none!important;
   }
-
-  body {
-    background: var(--bg) !important;
-    color: var(--text) !important;
+  body { background: var(--bg) !important; color: var(--text) !important; }
+  body::before { display: none; }
+  main { padding: 0; max-width: 100%; }
+  .report-card { border: 1px solid var(--border); border-radius: 0; background: var(--surface) !important; }
+  .rc-header { background: linear-gradient(135deg, var(--surface2), var(--surface)) !important; }
+  .metric-box,.stance-section,.evidence-section,.fact-section,.verdict-section {
+    background: var(--surface2) !important; border-color: var(--border) !important;
   }
-
-  body::before {
-    display: none;
-  }
-
-  main {
-    padding: 0;
-    max-width: 100%;
-  }
-
-  .report-card {
-    border: 1px solid var(--border);
-    border-radius: 0;
-    background: var(--surface) !important;
-  }
-
-  .rc-header {
-    background: linear-gradient(135deg, var(--surface2), var(--surface)) !important;
-  }
-
-  .metric-box,
-  .stance-section,
-  .evidence-section,
-  .fact-section,
-  .verdict-section {
-    background: var(--surface2) !important;
-    border-color: var(--border) !important;
-  }
-
-  #result {
-    display: block !important;
-  }
+  #result { display: block !important; }
 }
 
 /* ===== MOBILE RESPONSIVE ===== */
@@ -535,7 +461,7 @@ footer span{color:var(--saffron)}
       <div class="dot"></div>
       <div class="dot"></div>
       <div class="dot"></div>
-      <span>satya-analyzer.py — input terminal</span>
+      <span>input terminal</span>
     </div>
     <textarea id="inputText" placeholder="Paste any news headline, WhatsApp forward, social media post, or claim here..."></textarea>
     <div class="input-footer">
@@ -562,6 +488,7 @@ footer span{color:var(--saffron)}
 
   <div id="result"></div>
 </main>
+
 <!-- ABOUT MODAL -->
 <div class="modal-overlay" id="aboutModal" onclick="closeAbout(event)">
   <div class="modal">
@@ -608,191 +535,244 @@ footer span{color:var(--saffron)}
 
       <div class="about-section">
         <h3>Created by</h3>
-        <p> Vagish Parameshwar Shanbhag</p><br>
+        <p>Vagish Parameshwar Shanbhag</p><br>
       </div>
 
     </div>
   </div>
 </div>
+
 <footer>
   <p>सत्यमेव जयते — <span>Truth Alone Triumphs</span></p>
 </footer>
 
 <script>
+
 // ===== LIVE BACKEND STATUS CHECK =====
-async function checkBackendStatus(){
+async function checkBackendStatus() {
   const dot  = document.querySelector('.status-dot');
   const text = document.querySelector('.status-text');
   try {
     const res = await fetch('http://127.0.0.1:8000/health');
-    if(res.ok){
-      dot.style.background  = '#3fb950';
-      dot.style.boxShadow   = '0 0 8px #3fb950';
-      text.textContent      = 'SYSTEM ONLINE';
-      text.style.color      = '#3fb950';
+    if (res.ok) {
+      dot.style.background = '#3fb950';
+      dot.style.boxShadow  = '0 0 8px #3fb950';
+      text.textContent     = 'SYSTEM ONLINE';
+      text.style.color     = '#3fb950';
     } else {
       throw new Error('offline');
     }
   } catch {
-    dot.style.background  = '#f85149';
-    dot.style.boxShadow   = '0 0 8px #f85149';
-    text.textContent      = 'BACKEND OFFLINE';
-    text.style.color      = '#f85149';
+    dot.style.background = '#f85149';
+    dot.style.boxShadow  = '0 0 8px #f85149';
+    text.textContent     = 'BACKEND OFFLINE';
+    text.style.color     = '#f85149';
   }
 }
 
-// Check on load + every 30 seconds
 checkBackendStatus();
 setInterval(checkBackendStatus, 30000);
 
-// Char counter
-document.getElementById('inputText').addEventListener('input', function(){
+// ===== CHAR COUNTER =====
+document.getElementById('inputText').addEventListener('input', function () {
   document.getElementById('charCount').textContent = this.value.length + ' characters';
 });
 
-// Loading steps animation
-function animateSteps(){
-  const steps = ['step1','step2','step3','step4'];
-  let i = 0;
-  const interval = setInterval(()=>{
-    if(i > 0) document.getElementById(steps[i-1]).classList.replace('active','done');
-    if(i < steps.length){
-      document.getElementById(steps[i]).classList.add('active');
+// ===== RESET STEPS =====
+// Resets all loading steps back to their default (inactive) state
+function resetSteps() {
+  ['step1', 'step2', 'step3', 'step4'].forEach(function (id) {
+    var el = document.getElementById(id);
+    el.className = 'loading-step';
+  });
+  // Make step1 active by default so something is highlighted immediately
+  document.getElementById('step1').classList.add('active');
+}
+
+// ===== ANIMATE STEPS =====
+// ONLY highlights steps orange (active) — NEVER marks green (done)
+// Green (done) is applied ONLY after API response inside analyzeText()
+function animateSteps() {
+  var steps = ['step1', 'step2', 'step3', 'step4'];
+  var i = 0;
+  var interval = setInterval(function () {
+    // Remove active from previous — do NOT add 'done' here
+    if (i > 0 && document.getElementById(steps[i - 1])) {
+      document.getElementById(steps[i - 1]).classList.remove('active');
+    }
+    if (i < steps.length) {
+      var el = document.getElementById(steps[i]);
+      if (el) {
+        el.classList.remove('done');
+        el.classList.add('active'); // stays orange throughout loading
+      }
       i++;
     } else {
-      clearInterval(interval);
+      // Loop back so animation keeps cycling if backend is slow
+      i = 0;
     }
   }, 1800);
   return interval;
 }
 
-function resetSteps(){
-  ['step1','step2','step3','step4'].forEach(id=>{
-    const el = document.getElementById(id);
-    el.className = 'loading-step';
-  });
-}
+// ===== ANALYZE TEXT =====
+async function analyzeText() {
+  var text     = document.getElementById('inputText').value.trim();
+  var btn      = document.getElementById('analyzeBtn');
+  var loading  = document.getElementById('loading');
+  var result   = document.getElementById('result');
+  var errorMsg = document.getElementById('errorMsg');
 
-async function analyzeText(){
-  const text = document.getElementById('inputText').value.trim();
-  const btn = document.getElementById('analyzeBtn');
-  const loading = document.getElementById('loading');
-  const result = document.getElementById('result');
-  const errorMsg = document.getElementById('errorMsg');
-
+  // --- Reset UI state ---
   errorMsg.style.display = 'none';
-  result.style.display = 'none';
+  result.style.display   = 'none';
+  result.innerHTML       = '';
 
-  if(!text){
-    errorMsg.textContent = 'Please paste some text to analyze.';
+  // --- Guard: empty input ---
+  if (!text) {
+    errorMsg.textContent   = 'Please paste some text to analyze.';
     errorMsg.style.display = 'block';
     return;
   }
 
-  btn.disabled = true;
+  // --- Start loading UI ---
+  btn.disabled          = true;
   loading.style.display = 'block';
   resetSteps();
-  const stepInterval = animateSteps();
+  var stepInterval = animateSteps();
+
+  // ✅ FIX 1: Smooth scroll to loading section immediately after it becomes visible
+  loading.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  // Minimum loading display time so animation doesn't flicker
+  var MIN_LOADING_MS = 3500;
+  var startTime      = Date.now();
+
+  // --- Debug logs ---
+  console.log('[SATYA] ▶ analyzeText() triggered');
+  console.log('[SATYA] Input (first 100 chars):', text.substring(0, 100));
+  console.log('[SATYA] ⏳ Sending fetch to API...');
 
   try {
-    const response = await fetch('http://127.0.0.1:8000/api/text/analyze',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({text})
+    var response = await fetch('http://127.0.0.1:8000/api/text/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: text })
     });
-    if(!response.ok) throw new Error('API error');
-    const data = await response.json();
+
+    console.log('[SATYA] ✅ Response received. HTTP Status:', response.status);
+
+    if (!response.ok) {
+      var errBody = await response.text();
+      console.error('[SATYA] ❌ Non-OK response body:', errBody);
+      throw new Error('API returned ' + response.status + ' — ' + errBody);
+    }
+
+    var data = await response.json();
+    console.log('[SATYA] ✅ JSON parsed successfully:', data);
+
+    // Wait for minimum animation time before rendering
+    var elapsed   = Date.now() - startTime;
+    var remaining = MIN_LOADING_MS - elapsed;
+    if (remaining > 0) {
+      await new Promise(function (resolve) { setTimeout(resolve, remaining); });
+    }
+
     clearInterval(stepInterval);
+
+    // ✅ FIX 2: Force ALL steps green before showing result
+    ['step1', 'step2', 'step3', 'step4'].forEach(function (id) {
+      var el = document.getElementById(id);
+      el.className = 'loading-step done'; // remove active, add done (green ✓)
+    });
+
+    // Wait 500ms so user sees all green steps before result appears
+    await new Promise(function (resolve) { setTimeout(resolve, 500); });
+
+    console.log('[SATYA] ▶ Calling renderResult()...');
     renderResult(data);
-  } catch(err){
+
+  } catch (err) {
     clearInterval(stepInterval);
-    errorMsg.textContent = '⚠ Could not connect to SATYA backend. Make sure python run.py is running.';
+    console.error('[SATYA] ❌ Fetch failed. Error:', err);
+    console.error('[SATYA] Possible causes: backend offline | CORS blocked | wrong port | JSON parse error');
+    errorMsg.textContent   = '⚠ Analysis failed: ' + err.message + '. Check browser console (F12) for full details.';
     errorMsg.style.display = 'block';
+
   } finally {
-    btn.disabled = false;
+    btn.disabled          = false;
     loading.style.display = 'none';
   }
 }
 
-function renderResult(data){
+// ===== RENDER RESULT =====
+function renderResult(data) {
 
-  // Save for share function
   window._lastReport   = data.truth_report  || {};
   window._lastAI       = data.ai_detection  || {};
   window._lastFact     = data.fact_check    || {};
   window._lastSemantic = data.semantic      || {};
-  window._lastInput = document.getElementById('inputText').value;
+  window._lastInput    = document.getElementById('inputText').value;
 
-  const input = window._lastInput || document.getElementById('inputText').value || 'N/A';
-  const report   = data.truth_report  || {};
-  const ai       = data.ai_detection  || {};
-  const fact     = data.fact_check    || {};
-  const semantic = data.semantic      || {};
-  const evidence = data.evidence      || {};
+  var input    = window._lastInput || 'N/A';
+  var report   = data.truth_report  || {};
+  var ai       = data.ai_detection  || {};
+  var fact     = data.fact_check    || {};
+  var semantic = data.semantic      || {};
+  var evidence = data.evidence      || {};
 
-  const score       = report.credibility_score ?? 0;
-  const aiPercent   = Math.round((ai.ai_probability ?? 0) * 100);
-  const semVerdict  = semantic.verdict   || 'NO EVIDENCE';
-  const supports    = semantic.supports  ?? 0;
-  const contradicts = semantic.contradicts ?? 0;
-  const neutral     = semantic.neutral   ?? 0;
-  const details     = semantic.details   || [];
-  const totalSrc    = evidence.total     ?? 0;
+  var score       = report.credibility_score ?? 0;
+  var aiPercent   = Math.round((ai.ai_probability ?? 0) * 100);
+  var semVerdict  = semantic.verdict    || 'NO EVIDENCE';
+  var supports    = semantic.supports   ?? 0;
+  var contradicts = semantic.contradicts ?? 0;
+  var neutral     = semantic.neutral    ?? 0;
+  var details     = semantic.details    || [];
+  var totalSrc    = evidence.total      ?? 0;
 
-  // Colors
-  const scoreColor = score >= 90 ? '#3fb950' : score >= 70 ? '#d29922' : '#f85149';
-  const riskClass  = score >= 90 ? 'risk-low' : score >= 70 ? 'risk-medium' : 'risk-high';
+  var scoreColor = score >= 90 ? '#3fb950' : score >= 70 ? '#d29922' : '#f85149';
+  var riskClass  = score >= 90 ? 'risk-low' : score >= 70 ? 'risk-medium' : 'risk-high';
 
-  // Score ring
-  const circumference = 2 * Math.PI * 40;
-  const offset = circumference - (score / 100) * circumference;
+  var circumference = 2 * Math.PI * 40;
+  var offset        = circumference - (score / 100) * circumference;
 
-  // Semantic color
-  const semColor = semVerdict.includes('SUPPORT') ? '#3fb950'
-    : semVerdict.includes('CONTRADICT') ? '#f85149'
-    : semVerdict === 'NO EVIDENCE' ? '#f85149' : '#d29922';
+  var semColor = semVerdict.includes('SUPPORT')    ? '#3fb950'
+               : semVerdict.includes('CONTRADICT') ? '#f85149'
+               : semVerdict === 'NO EVIDENCE'      ? '#f85149' : '#d29922';
 
-// Verdict color based on text content
-const verdict = report.verdict || '';
-const isGreen = verdict.includes('LIKELY AUTHENTIC') || verdict.includes('AUTHENTIC');
-const isYellow = verdict.includes('PARTIALLY') || verdict.includes('UNCERTAIN') || 
-                 verdict.includes('UNVERIFIABLE') || verdict.includes('MIXED') ||
-                 verdict.includes('WEAKLY');
-const isRed = !isGreen && !isYellow;
+  var verdict   = report.verdict || '';
+  var isGreen   = verdict.includes('LIKELY AUTHENTIC') || verdict.includes('AUTHENTIC');
+  var isYellow  = verdict.includes('PARTIALLY') || verdict.includes('UNCERTAIN') ||
+                  verdict.includes('UNVERIFIABLE') || verdict.includes('MIXED') ||
+                  verdict.includes('WEAKLY');
+  var isRed     = !isGreen && !isYellow;
 
-const verdictStyle = isGreen
-  ? 'background:rgba(63,185,80,0.08);border:1px solid rgba(63,185,80,0.25);color:#3fb950'
-  : isYellow
-  ? 'background:rgba(210,153,34,0.08);border:1px solid rgba(210,153,34,0.25);color:#d29922'
-  : 'background:rgba(248,81,73,0.08);border:1px solid rgba(248,81,73,0.25);color:#f85149';
+  var verdictStyle = isGreen
+    ? 'background:rgba(63,185,80,0.08);border:1px solid rgba(63,185,80,0.25);color:#3fb950'
+    : isYellow
+    ? 'background:rgba(210,153,34,0.08);border:1px solid rgba(210,153,34,0.25);color:#d29922'
+    : 'background:rgba(248,81,73,0.08);border:1px solid rgba(248,81,73,0.25);color:#f85149';
 
-const verdictIcon = isGreen ? '✓' : isYellow ? '⚠' : '✗';
+  var verdictIcon = isGreen ? '✓' : isYellow ? '⚠' : '✗';
 
-  // Evidence HTML
-  const evidenceHTML = details.length > 0
-    ? details.map(d => {
-        const cls = d.stance === 'SUPPORTS' ? 'ev-support'
-          : d.stance === 'CONTRADICTS' ? 'ev-contra' : 'ev-neutral';
-        const clr = d.stance === 'SUPPORTS' ? '#3fb950'
-          : d.stance === 'CONTRADICTS' ? '#f85149' : '#8b949e';
-        return `<div class="evidence-item ${cls}">
-          <div class="ev-stance-label" style="color:${clr}">${d.stance}</div>
-          <div class="ev-text">${d.snippet || 'No snippet available'}</div>
-          <div class="ev-sim">Similarity score: ${(d.similarity * 100).toFixed(0)}%</div>
-        </div>`;
+  var evidenceHTML = details.length > 0
+    ? details.map(function (d) {
+        var cls = d.stance === 'SUPPORTS'    ? 'ev-support'
+                : d.stance === 'CONTRADICTS' ? 'ev-contra' : 'ev-neutral';
+        var clr = d.stance === 'SUPPORTS'    ? '#3fb950'
+                : d.stance === 'CONTRADICTS' ? '#f85149' : '#8b949e';
+        return '<div class="evidence-item ' + cls + '">' +
+          '<div class="ev-stance-label" style="color:' + clr + '">' + d.stance + '</div>' +
+          '<div class="ev-text">' + (d.snippet || 'No snippet available') + '</div>' +
+          '<div class="ev-sim">Similarity score: ' + (d.similarity * 100).toFixed(0) + '%</div>' +
+          '</div>';
       }).join('')
     : '<div style="color:var(--text3);font-size:0.8rem;font-family:var(--mono);margin-top:6px">// No evidence snippets collected</div>';
 
-  const sourceHTML = fact.url
-    ? `<a class="source-link" href="${fact.url}" target="_blank">→ View fact-check source</a>`
-    : '';
-
-  const resultEl = document.getElementById('result');
+  var resultEl = document.getElementById('result');
   resultEl.style.display = 'block';
   resultEl.innerHTML = `
   <div class="report-card">
-
-    <!-- HEADER -->
     <div class="rc-header">
       <div class="score-ring-wrap">
         <svg class="score-ring" width="90" height="90" viewBox="0 0 90 90">
@@ -809,16 +789,13 @@ const verdictIcon = isGreen ? '✓' : isYellow ? '⚠' : '✗';
       </div>
       <div class="rc-meta">
         <div class="rc-title">SATYA Truth Report Card</div>
-        <div class="rc-claim">"${window._lastInput || 'No input'}"</div>
+        <div class="rc-claim">"${input}"</div>
         <div class="rc-verdict" style="color:${scoreColor}">${report.risk_level || 'UNKNOWN'} — Credibility: ${score}/100</div>
-        <div style="margin-top:10px;font-size:0.75rem;color:#888">
-        Analyzed on: ${new Date().toLocaleString()}
-        </div>
+        <div style="margin-top:10px;font-size:0.75rem;color:#888">Analyzed on: ${new Date().toLocaleString()}</div>
       </div>
       <div class="risk-tag ${riskClass}">${report.risk_level || 'UNKNOWN'}</div>
     </div>
 
-    <!-- METRICS -->
     <div class="metrics-row">
       <div class="metric-box">
         <div class="metric-label">AI Probability</div>
@@ -843,7 +820,6 @@ const verdictIcon = isGreen ? '✓' : isYellow ? '⚠' : '✗';
       </div>
     </div>
 
-    <!-- SEMANTIC VERIFICATION -->
     <div class="stance-section">
       <div class="section-label">Semantic Evidence Verification</div>
       <div class="sem-verdict" style="color:${semColor}">${semVerdict}</div>
@@ -855,24 +831,20 @@ const verdictIcon = isGreen ? '✓' : isYellow ? '⚠' : '✗';
       </div>
     </div>
 
-    <!-- EVIDENCE -->
     <div class="evidence-section">
       <div class="section-label">Evidence Sources Analyzed</div>
       ${evidenceHTML}
     </div>
 
-    <!-- FACT CHECK -->
     <div class="fact-section">
       ${fact.verdict && fact.verdict !== 'NO DATA FOUND' && fact.verdict !== 'ERROR' ? `
-      <div class="fact-section">
       <div class="section-label">Google Fact Check Database</div>
       <div style="font-size:0.85rem;font-weight:600;color:${fact.verdict === 'TRUE' ? '#3fb950' : fact.verdict === 'FALSE' ? '#f85149' : '#d29922'}">${fact.verdict}</div>
       <div class="fact-source">${fact.source ? 'Source: ' + fact.source : ''}</div>
       ${fact.url ? `<a class="source-link" href="${fact.url}" target="_blank">→ View fact-check source</a>` : ''}
-    </div>` : ''}
+      ` : ''}
     </div>
 
-    <!-- VERDICT -->
     <div class="verdict-section">
       <div class="section-label">Final Verdict</div>
       <div class="verdict-box" style="${verdictStyle}">
@@ -880,78 +852,76 @@ const verdictIcon = isGreen ? '✓' : isYellow ? '⚠' : '✗';
         <div>${report.verdict || 'Unable to determine'}</div>
       </div>
     </div>
-  <!-- ACTION BUTTONS -->
+
     <div class="action-row" style="padding:0 1.5rem 1.5rem">
-      <button class="action-btn btn-pdf" onclick="exportPDF()">
-        ⬇ Export as PDF
-      </button>
-      <button class="action-btn btn-share" id="shareBtn" onclick="shareResult()">
-        ⎘ Copy Report
-      </button>
+      <button class="action-btn btn-pdf" onclick="exportPDF()">⬇ Export as PDF</button>
+      <button class="action-btn btn-share" id="shareBtn" onclick="shareResult()">⎘ Copy Report</button>
     </div>
   </div>`;
 
-  resultEl.scrollIntoView({behavior:'smooth',block:'start'});
+  resultEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
+
 // ===== ABOUT MODAL =====
-function openAbout(){
+function openAbout() {
   document.getElementById('aboutModal').classList.add('open');
 }
-function closeAbout(e){
-  if(e.target.id === 'aboutModal'){
+function closeAbout(e) {
+  if (e.target.id === 'aboutModal') {
     document.getElementById('aboutModal').classList.remove('open');
   }
 }
 
 // ===== EXPORT PDF =====
-function exportPDF(){
+function exportPDF() {
   window.print();
 }
 
 // ===== SHARE / COPY REPORT =====
-function shareResult(){
-  const report  = window._lastReport  || {};
-  const ai      = window._lastAI      || {};
-  const fact    = window._lastFact    || {};
-  const semantic = window._lastSemantic || {};
+function shareResult() {
+  var report   = window._lastReport   || {};
+  var ai       = window._lastAI       || {};
+  var fact     = window._lastFact     || {};
+  var semantic = window._lastSemantic || {};
 
-  const score     = report.credibility_score ?? 0;
-  const aiPercent = Math.round((ai.ai_probability ?? 0) * 100);
-  const verdict   = report.verdict || 'N/A';
-  const risk      = report.risk_level || 'N/A';
-  const semV      = semantic.verdict || 'N/A';
+  var score     = report.credibility_score ?? 0;
+  var aiPercent = Math.round((ai.ai_probability ?? 0) * 100);
+  var verdict   = report.verdict    || 'N/A';
+  var risk      = report.risk_level || 'N/A';
+  var semV      = semantic.verdict  || 'N/A';
+  var input     = window._lastInput || 'N/A';
 
-  const input = window._lastInput || 'N/A';
-  const text = `
-SATYA Truth Report Card
-━━━━━━━━━━━━━━━━━━━━━━
-Input Text:
-"${input}"
-━━━━━━━━━━━━━━━━━━━━━━
-Credibility Score : ${score}/100
-Risk Level        : ${risk}
-AI Probability    : ${aiPercent}%
-Semantic Verdict  : ${semV}
-Fact Check        : ${fact.verdict || 'NO DATA'}
-━━━━━━━━━━━━━━━━━━━━━━
-Verdict: ${verdict}
+  var text = [
+    'SATYA Truth Report Card',
+    '━━━━━━━━━━━━━━━━━━━━━━',
+    'Input Text:',
+    '"' + input + '"',
+    '━━━━━━━━━━━━━━━━━━━━━━',
+    'Credibility Score : ' + score + '/100',
+    'Risk Level        : ' + risk,
+    'AI Probability    : ' + aiPercent + '%',
+    'Semantic Verdict  : ' + semV,
+    'Fact Check        : ' + (fact.verdict || 'NO DATA'),
+    '━━━━━━━━━━━━━━━━━━━━━━',
+    'Verdict: ' + verdict,
+    '',
+    'Analyzed by SATYA — Truth Detection Platform',
+    'सत्यमेव जयते — Truth Alone Triumphs'
+  ].join('\n');
 
-Analyzed by SATYA — Truth Detection Platform
-सत्यमेव जयते — Truth Alone Triumphs
-  `.trim();
-
-  navigator.clipboard.writeText(text).then(()=>{
-    const btn = document.getElementById('shareBtn');
-    btn.textContent = '✓ Copied!';
-    btn.className = 'action-btn btn-copied';
-    setTimeout(()=>{
+  navigator.clipboard.writeText(text).then(function () {
+    var btn = document.getElementById('shareBtn');
+    btn.textContent  = '✓ Copied!';
+    btn.className    = 'action-btn btn-copied';
+    setTimeout(function () {
       btn.textContent = '⎘ Copy Report';
-      btn.className = 'action-btn btn-share';
+      btn.className   = 'action-btn btn-share';
     }, 2000);
-  }).catch(()=>{
+  }).catch(function () {
     alert('Copy failed — please copy manually!');
   });
 }
+
 </script>
 </body>
 </html>
