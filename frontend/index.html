@@ -74,7 +74,6 @@ header{
 /* MAIN */
 main{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:4rem 2rem 6rem}
 
-/* HERO */
 .hero{text-align:center;margin-bottom:3rem}
 .hero-tag{
   display:inline-block;font-size:0.7rem;font-family:var(--mono);
@@ -479,7 +478,7 @@ footer span{color:var(--saffron)}
       <div class="loading-bar"><div class="loading-fill"></div></div>
       <div class="loading-steps">
         <div class="loading-step active" id="step1">Initializing AI detection engine...</div>
-        <div class="loading-step" id="step2">Scanning 30+ news sources...</div>
+        <div class="loading-step" id="step2">Scanning 35+ news sources...</div>
         <div class="loading-step" id="step3">Running semantic verification...</div>
         <div class="loading-step" id="step4">Calculating credibility score...</div>
       </div>
@@ -579,24 +578,20 @@ document.getElementById('inputText').addEventListener('input', function () {
 });
 
 // ===== RESET STEPS =====
-// Resets all loading steps back to their default (inactive) state
 function resetSteps() {
   ['step1', 'step2', 'step3', 'step4'].forEach(function (id) {
     var el = document.getElementById(id);
     el.className = 'loading-step';
   });
-  // Make step1 active by default so something is highlighted immediately
   document.getElementById('step1').classList.add('active');
 }
 
 // ===== ANIMATE STEPS =====
-// ONLY highlights steps orange (active) — NEVER marks green (done)
-// Green (done) is applied ONLY after API response inside analyzeText()
 function animateSteps() {
   var steps = ['step1', 'step2', 'step3', 'step4'];
   var i = 0;
   var interval = setInterval(function () {
-    // Remove active from previous — do NOT add 'done' here
+ 
     if (i > 0 && document.getElementById(steps[i - 1])) {
       document.getElementById(steps[i - 1]).classList.remove('active');
     }
@@ -604,11 +599,11 @@ function animateSteps() {
       var el = document.getElementById(steps[i]);
       if (el) {
         el.classList.remove('done');
-        el.classList.add('active'); // stays orange throughout loading
+        el.classList.add('active'); 
       }
       i++;
     } else {
-      // Loop back so animation keeps cycling if backend is slow
+
       i = 0;
     }
   }, 1800);
@@ -641,10 +636,9 @@ async function analyzeText() {
   resetSteps();
   var stepInterval = animateSteps();
 
-  // ✅ FIX 1: Smooth scroll to loading section immediately after it becomes visible
   loading.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-  // Minimum loading display time so animation doesn't flicker
+
   var MIN_LOADING_MS = 3500;
   var startTime      = Date.now();
 
@@ -671,7 +665,6 @@ async function analyzeText() {
     var data = await response.json();
     console.log('[SATYA] ✅ JSON parsed successfully:', data);
 
-    // Wait for minimum animation time before rendering
     var elapsed   = Date.now() - startTime;
     var remaining = MIN_LOADING_MS - elapsed;
     if (remaining > 0) {
@@ -680,13 +673,11 @@ async function analyzeText() {
 
     clearInterval(stepInterval);
 
-    // ✅ FIX 2: Force ALL steps green before showing result
     ['step1', 'step2', 'step3', 'step4'].forEach(function (id) {
       var el = document.getElementById(id);
-      el.className = 'loading-step done'; // remove active, add done (green ✓)
+      el.className = 'loading-step done'; 
     });
 
-    // Wait 500ms so user sees all green steps before result appears
     await new Promise(function (resolve) { setTimeout(resolve, 500); });
 
     console.log('[SATYA] ▶ Calling renderResult()...');
